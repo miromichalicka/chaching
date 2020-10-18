@@ -30,23 +30,28 @@ class Request extends \Chaching\Message
 			'MERCHANTNUMBER', 'ORDERNUMBER', 'AMOUNT', 'CURRENCY', 'URL'
 		];
 
-		$this->optional_fields = [ 'MERORDERNUM', 'MD', 'DESCRIPTION' ];
+		$this->optional_fields = [
+		  'MERORDERNUM', 'MD', 'DESCRIPTION', 'CLIENT_EMAIL', 'REFERENCE_NUMBER'
+    ];
 
 		$this->field_map = [
-			Driver::AMOUNT 				=> 'AMOUNT',
-			Driver::CURRENCY 			=> 'CURRENCY',
-			Driver::DESCRIPTION 		=> 'DESCRIPTION',
+			Driver::AMOUNT 				    => 'AMOUNT',
+			Driver::CURRENCY 			    => 'CURRENCY',
+			Driver::DESCRIPTION 	    => 'DESCRIPTION',
 			Driver::VARIABLE_SYMBOL 	=> 'ORDERNUMBER',
-			Driver::CALLBACK 			=> 'URL'
+			Driver::CALLBACK 			    => 'URL',
+      Driver::REFERENCE_NUMBER  => 'REFERENCE_NUMBER'
 		];
 
 		$this->set_authorization($authorization);
 
-		$this->fields['DEPOSITFLAG'] 	= 1;
-		$this->fields['OPERATION'] 		= 'CREATE_ORDER';
-		$this->fields['CURRENCY'] 		= Currencies::EUR;
-		$this->fields['MERORDERNUM'] 	= '';
-		$this->fields['MD'] 			= '';
+		$this->fields['DEPOSITFLAG'] 	    = 1;
+		$this->fields['OPERATION'] 		    = 'CREATE_ORDER';
+		$this->fields['CURRENCY'] 		    = Currencies::EUR;
+		$this->fields['MERORDERNUM'] 	    = '';
+		$this->fields['MD'] 			        = '';
+		$this->fields['CLIENT_EMAIL']     = '';
+		$this->fields['REFERENCE_NUMBER'] = '';
 
 		if (!empty($attributes))
 		{
@@ -65,7 +70,7 @@ class Request extends \Chaching\Message
 	 */
 	protected function validate()
 	{
-		if (!is_array($this->auth) OR count($this->auth) !== 2)
+		if (!is_array($this->auth) || count($this->auth) !== 2)
 			throw new InvalidAuthorizationException("Merchant ID is missing.");
 
 		if (!is_array($this->auth[ 1 ]))
@@ -77,7 +82,7 @@ class Request extends \Chaching\Message
 				"according to the documentation."
 			);
 
-		if (!isset($this->auth[ 1 ]['certificate']) OR empty($this->auth[ 1 ]['certificate']))
+		if (!isset($this->auth[ 1 ]['certificate']) || empty($this->auth[ 1 ]['certificate']))
 			throw new InvalidAuthorizationException(
 				"Authorization information (`certificate` key within " .
 				"`shared_secret`) is missing value. Try changing it to " .
@@ -95,7 +100,7 @@ class Request extends \Chaching\Message
 			));
 		}
 
-		if (!isset($this->auth[ 1 ]['key']) OR empty($this->auth[ 1 ]['key']))
+		if (!isset($this->auth[ 1 ]['key']) || empty($this->auth[ 1 ]['key']))
 			throw new InvalidAuthorizationException(
 				"Authorization information (`key` key within " .
 				"`shared_secret`) is missing value. Try changing it to " .
@@ -113,7 +118,7 @@ class Request extends \Chaching\Message
 			));
 		}
 
-		if (!isset($this->auth[ 1 ]['passphrase']) OR empty($this->auth[ 1 ]['passphrase']))
+		if (!isset($this->auth[ 1 ]['passphrase']) || empty($this->auth[ 1 ]['passphrase']))
 			throw new InvalidAuthorizationException(
 				"The passphrase to certificate provided in `certificate` " .
 				"key within `shared_secret` is missing value."
@@ -130,7 +135,7 @@ class Request extends \Chaching\Message
 				"you got from the bank.", $this->fields['MERCHANTNUMBER']
 			));
 
-		if (!isset($this->auth[ 1 ]) OR empty($this->auth[ 1 ]))
+		if (!isset($this->auth[ 1 ]) || empty($this->auth[ 1 ]))
 			throw new InvalidOptionsException(
 				"Authorization information are unacceptable as it does " .
 				"not include the secret key to sign requests. Try " .
@@ -154,7 +159,7 @@ class Request extends \Chaching\Message
 				"decimal places.", Driver::AMOUNT, $this->fields['AMOUNT']
 			));
 
-		if (is_string($this->fields['CURRENCY']) AND !is_numeric($this->fields['CURRENCY']))
+		if (is_string($this->fields['CURRENCY']) && !is_numeric($this->fields['CURRENCY']))
 		{
 			$currency = Currencies::get($this->fields['CURRENCY']);
 
@@ -193,7 +198,7 @@ class Request extends \Chaching\Message
 			));
 
 		// Optional fields
-		if (isset($this->fields['DESCRIPTION']) AND !empty($this->fields['DESCRIPTION']))
+		if (isset($this->fields['DESCRIPTION']) && !empty($this->fields['DESCRIPTION']))
 		{
 			if (!preg_match('/[a-zA-Z0-9 \.,\_-]{1,255}/', $this->fields['DESCRIPTION']))
 				throw new InvalidOptionsException(sprintf(
@@ -211,7 +216,7 @@ class Request extends \Chaching\Message
 		$fields 			= [
 			'MERCHANTNUMBER', 'OPERATION', 'ORDERNUMBER', 'AMOUNT',
 			'CURRENCY', 'DEPOSITFLAG', 'MERORDERNUM', 'URL', 'DESCRIPTION',
-			'MD'
+			'MD', 'REFERENCENUMBER'
 		];
 
 		foreach ($fields as $field)
@@ -256,7 +261,7 @@ class Request extends \Chaching\Message
 	private function request_server_url()
 	{
 		return ($this->environment === Chaching::SANDBOX)
-			? 'https://test.3dsecure.gpwebpay.com/csobsk/order.do'
-			: 'https://3dsecure.gpwebpay.com/csobsk/order.do';
+			? 'https://test.3dsecure.gpwebpay.com/pgw/order.do'
+			: 'https://3dsecure.gpwebpay.com/pgw/order.do';
 	}
 }

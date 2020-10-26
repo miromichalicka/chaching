@@ -31,7 +31,7 @@ class Request extends \Chaching\Message
 		];
 
 		$this->optional_fields = [
-		  'MERORDERNUM', 'MD', 'DESCRIPTION', 'CLIENT_EMAIL', 'REFERENCE_NUMBER'
+		  'MERORDERNUM', 'MD', 'DESCRIPTION', 'EMAIL', 'REFERENCENUMBER'
     ];
 
 		$this->field_map = [
@@ -40,7 +40,8 @@ class Request extends \Chaching\Message
 			Driver::DESCRIPTION 	    => 'DESCRIPTION',
 			Driver::VARIABLE_SYMBOL 	=> 'ORDERNUMBER',
 			Driver::CALLBACK 			    => 'URL',
-      Driver::REFERENCE_NUMBER  => 'REFERENCE_NUMBER'
+      Driver::REFERENCE_NUMBER  => 'REFERENCENUMBER',
+      Driver::CLIENT_EMAIL      => 'EMAIL',
 		];
 
 		$this->set_authorization($authorization);
@@ -50,8 +51,6 @@ class Request extends \Chaching\Message
 		$this->fields['CURRENCY'] 		    = Currencies::EUR;
 		$this->fields['MERORDERNUM'] 	    = '';
 		$this->fields['MD'] 			        = '';
-		$this->fields['CLIENT_EMAIL']     = '';
-		$this->fields['REFERENCE_NUMBER'] = '';
 
 		if (!empty($attributes))
 		{
@@ -216,7 +215,7 @@ class Request extends \Chaching\Message
 		$fields 			= [
 			'MERCHANTNUMBER', 'OPERATION', 'ORDERNUMBER', 'AMOUNT',
 			'CURRENCY', 'DEPOSITFLAG', 'MERORDERNUM', 'URL', 'DESCRIPTION',
-			'MD', 'REFERENCENUMBER'
+			'MD', 'EMAIL', 'REFERENCENUMBER'
 		];
 
 		foreach ($fields as $field)

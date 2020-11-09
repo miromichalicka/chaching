@@ -215,7 +215,7 @@ class Request extends \Chaching\Message
 		$fields 			= [
 			'MERCHANTNUMBER', 'OPERATION', 'ORDERNUMBER', 'AMOUNT',
 			'CURRENCY', 'DEPOSITFLAG', 'MERORDERNUM', 'URL', 'DESCRIPTION',
-			'MD', 'REFERENCENUMBER'
+			'MD'
 		];
 
 		foreach ($fields as $field)
